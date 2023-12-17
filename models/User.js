@@ -7,13 +7,13 @@ const userSchema = new Schema(
       type: String,
       unique: true,
       required: true,
-      trim: true
+      trim: true,
     },
     email: {
       type: String,
       unique: true,
       required: true,
-      match: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+      match: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
     },
     thoughts: [
       {
@@ -41,8 +41,7 @@ userSchema
   // Getter
   .get(function () {
     return this.friends.length;
-  })
-
+  });
 
 // Initialize our User model
 const User = model('User', userSchema);
