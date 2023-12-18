@@ -15,6 +15,13 @@ const reactionSchema = new Schema(
       type: String,
       required: true,
     },
+    createdAt: {
+      type: Date,
+      default: Date.now,
+      get: function (timestamp) {
+        return timestamp.toLocaleString();
+      },
+    },
   },
   {
     toJSON: {
