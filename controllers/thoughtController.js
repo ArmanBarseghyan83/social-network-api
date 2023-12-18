@@ -16,7 +16,9 @@ module.exports = {
     try {
       const thought = await Thought.findOne({
         _id: req.params.thoughtId,
-      }).select('-__v');
+      })
+        .select('-__v')
+        .populate('reactions');
 
       if (!thought) {
         return res.status(404).json({ message: 'No thought with that ID' });
@@ -33,7 +35,7 @@ module.exports = {
     try {
       const thought = await Thought.create(req.body);
 
-      const user = await User.findOneAndUpdate(
+      await User.findOneAndUpdate(
         { username: thought.username },
         { $addToSet: { thoughts: thought._id } },
         { new: true }
@@ -53,6 +55,11 @@ module.exports = {
         req.body,
         { new: true }
       );
+
+      if (!thought) {
+        return res.status(404).json({ message: 'No thought with that ID' });
+      }
+
       res.json(thought);
     } catch (err) {
       res.status(500).json(err);
@@ -69,8 +76,14 @@ module.exports = {
       if (!thought) {
         return res.status(404).json({ message: 'No thought with that ID' });
       }
+      
+      // Remove a thoughtId from user's thoughts array when deleted.
+      await User.findOneAndUpdate(
+        { username: thought.username },
+        { $pull: { thoughts: req.params.thoughtId  } },
+      );
 
-      res.json({ message: '!' });
+      res.json({ message: 'Thought deleted!' });
     } catch (err) {
       res.status(500).json(err);
     }
