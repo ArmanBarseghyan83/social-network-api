@@ -76,11 +76,11 @@ module.exports = {
       if (!thought) {
         return res.status(404).json({ message: 'No thought with that ID' });
       }
-      
+
       // Remove a thoughtId from user's thoughts array when deleted.
       await User.findOneAndUpdate(
         { username: thought.username },
-        { $pull: { thoughts: req.params.thoughtId  } },
+        { $pull: { thoughts: req.params.thoughtId } }
       );
 
       res.json({ message: 'Thought deleted!' });
